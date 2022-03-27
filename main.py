@@ -26,6 +26,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.optim
+from tensorboardX import SummaryWriter
 
 from config import get_configs
 from data_loaders import get_data_loader
@@ -82,6 +83,7 @@ class Trainer(object):
         print(self.args)
         self.performance_meters = self._set_performance_meters()
         self.reporter = self.args.reporter
+        self.tb_writer = SummaryWriter(self.args.log_folder)
         self.model = self._set_model()
         self.cross_entropy_loss = nn.CrossEntropyLoss().cuda()
         self.optimizer = self._set_optimizer()
@@ -322,6 +324,10 @@ class Trainer(object):
             val=train_performance['loss'])
         reporter_instance.write()
 
+        # tensorboard summarywriter
+        self.tb_writer.add_scalar('{split}/Classification', train_performance['classification_acc'], global_step=epoch)
+        self.tb_writer.add_scalar('{split}/loss', train_performance['loss'], global_step=epoch)
+
     def report(self, epoch, split):
         reporter_instance = self.reporter(self.args.reporter_log_root, epoch)
         for metric in self._EVAL_METRICS:
@@ -334,6 +340,13 @@ class Trainer(object):
                     .format(split=split, metric=metric),
                 val=self.performance_meters[split][metric].best_value)
         reporter_instance.write()
+
+        # tensorboard summarywriter
+        for metric in self._EVAL_METRICS:
+            if self.performance_meters[split][metric].current_value is not None:
+                self.tb_writer.add_scalar('{split}/{metric}',
+                                          self.performance_meters[split][metric].current_value,
+                                          global_step=epoch)
 
     def adjust_learning_rate(self, epoch):
         if epoch != 0 and epoch % self.args.lr_decay_frequency == 0:
