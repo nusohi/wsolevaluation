@@ -132,7 +132,7 @@ def get_configs():
     parser = argparse.ArgumentParser()
 
     # Util
-    parser.add_argument('--seed', type=int)
+    parser.add_argument('--seed', type=int, default=1899)
     parser.add_argument('--experiment_name', type=str, default='test_case')
     parser.add_argument('--override_cache', type=str2bool, nargs='?',
                         const=True, default=False)
@@ -158,7 +158,7 @@ def get_configs():
                              'class. 0 means "use all available samples".')
 
     # Setting
-    parser.add_argument('--architecture', default='resnet18',
+    parser.add_argument('--architecture', default='resnet50',
                         choices=_ARCHITECTURE_NAMES,
                         help='model architecture: ' +
                              ' | '.join(_ARCHITECTURE_NAMES) +
@@ -205,7 +205,7 @@ def get_configs():
                         const=True, default=False)
 
     # Method-specific hyperparameters
-    parser.add_argument('--wsol_method', type=str, default='base',
+    parser.add_argument('--wsol_method', type=str, default='cam',
                         choices=_METHOD_NAMES)
     parser.add_argument('--has_grid_size', type=int, default=4)
     parser.add_argument('--has_drop_rate', type=float, default=0.5)

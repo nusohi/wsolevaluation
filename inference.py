@@ -65,16 +65,17 @@ class CAMComputer(object):
         metadata = configure_metadata(metadata_root)
         cam_threshold_list = list(np.arange(0, 1, cam_curve_interval))
 
-        self.evaluator = {"OpenImages": MaskEvaluator,
-                          "CUB": BoxEvaluator,
-                          "ILSVRC": BoxEvaluator
-                          }[dataset_name](metadata=metadata,
-                                          dataset_name=dataset_name,
-                                          split=split,
-                                          cam_threshold_list=cam_threshold_list,
-                                          iou_threshold_list=iou_threshold_list,
-                                          mask_root=mask_root,
-                                          multi_contour_eval=multi_contour_eval)
+        self.evaluator = {
+            "OpenImages": MaskEvaluator,
+            "CUB": BoxEvaluator,
+            "ILSVRC": BoxEvaluator
+        }[dataset_name](metadata=metadata,
+                        dataset_name=dataset_name,
+                        split=split,
+                        cam_threshold_list=cam_threshold_list,
+                        iou_threshold_list=iou_threshold_list,
+                        mask_root=mask_root,
+                        multi_contour_eval=multi_contour_eval)
 
     def compute_and_evaluate_cams(self):
         print("Computing and evaluating cams.")

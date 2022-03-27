@@ -215,14 +215,15 @@ class Trainer(object):
             self.optimizer.step()
 
         loss_average = total_loss / float(num_images)
-        classification_acc = num_correct / float(num_images) * 100
+        class_acc = num_correct / float(num_images) * 100
 
-        self.performance_meters[split]['classification'].update(
-            classification_acc)
+        self.performance_meters[split]['classification'].update(class_acc)
         self.performance_meters[split]['loss'].update(loss_average)
 
-        return dict(classification_acc=classification_acc,
-                    loss=loss_average)
+        return dict(
+            classification_acc=class_acc,
+            loss=loss_average
+        )
 
     def print_performances(self):
         for split in self._SPLITS:
